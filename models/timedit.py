@@ -80,8 +80,6 @@ class LabelEmbedder(nn.Module):
             labels = self.token_drop(labels)
         return labels
 
-
-# 新增：记忆状态嵌入器
 class MemoryEmbedder(nn.Module):
     """
     Embeds memory state z from (N, 48) to network dimension and processes it.
@@ -95,7 +93,6 @@ class MemoryEmbedder(nn.Module):
             nn.ReLU(),
             nn.Linear(network_size, network_size)
         )
-        # 用于输出记忆状态
         self.z_shape_memory_head = nn.Sequential(
             nn.Linear(network_size, network_size // 2),
             nn.ReLU(),
@@ -112,7 +109,6 @@ class MemoryEmbedder(nn.Module):
 
     def get_memory_output(self, z_feature):
         """
-        从处理后的特征生成记忆状态输出
         z_feature: (N, network_size) -> (N, z_shape)
         """
         return self.z_shape_memory_head(z_feature)
@@ -227,13 +223,12 @@ class DiT(nn.Module):
 
         self.y_embedder_affine = nn.Linear(external_condition_dim, network_size, bias=True)
 
-        # 新增：记忆状态嵌入器
         self.z_embedder = MemoryEmbedder(z_shape, network_size)
 
         num_patches = self.x_embedder.num_patches
         self.pos_embed = nn.Parameter(torch.zeros(1, num_patches, network_size), requires_grad=False)
 
-        # 新增：记忆状态的位置编码（单独的token）
+
         self.z_pos_embed = nn.Parameter(torch.zeros(1, 1, network_size), requires_grad=False)
 
         self.blocks = nn.ModuleList([
@@ -241,7 +236,6 @@ class DiT(nn.Module):
         ])
         self.final_layer = FinalLayer(network_size, patch_size)
 
-        # 新增：记忆融合模块
         self.memory_fusion = nn.MultiheadAttention(network_size, num_heads=self.num_heads, batch_first=True)
         self.memory_norm = nn.LayerNorm(network_size)
 
@@ -261,8 +255,6 @@ class DiT(nn.Module):
         pos_embed = get_1d_sincos_pos_embed(self.network_size,
                                             np.arange(self.frame_stack // self.patch_size, dtype=np.float32))
         self.pos_embed.data.copy_(torch.from_numpy(pos_embed).float().unsqueeze(0))
-
-        # 新增：初始化记忆状态位置编码
         nn.init.normal_(self.z_pos_embed, std=0.02)
 
         # Initialize patch_embed like nn.Linear (instead of nn.Conv2d):
@@ -299,57 +291,39 @@ class DiT(nn.Module):
         return signals
 
     def forward(self, x, t, z, y):
-        """
-        Forward pass of DiT.
-        x: (N, C * L) tensor of time series inputs - 加噪的时序数据
-        z: (N, z_shape) tensor of memory state inputs - 记忆状态 (修改)
-        t: (N,) tensor of diffusion timesteps
-        y: (N, D) tensor of text labels
+        
 
-        Returns:
-        x_output: (N, C * L) 去噪后的时序数据
-        z_output: (N, z_shape) 更新后的记忆状态 (新增)
-        """
-        # 1. 处理输入x (加噪时序数据)
         x = x.view(x.shape[0], -1, self.frame_stack)  # Reshape x to (N, C, L)
         x_embedded = self.x_embedder(x) + self.pos_embed  # (N, T, D), where T = L / patch_size
 
-        # 2. 处理记忆状态z (修改：适配新的输入格式)
         z_embedded = self.z_embedder(z)  # (N, z_shape) -> (N, network_size)
         z_embedded = z_embedded.unsqueeze(1) + self.z_pos_embed  # (N, 1, network_size)
 
-        # 3. 记忆融合：让z记忆状态与当前x交互
         z_attended, _ = self.memory_fusion(
             query=z_embedded,  # (N, 1, network_size)
             key=x_embedded,  # (N, T, network_size)
             value=x_embedded  # (N, T, network_size)
         )
-        z_embedded = self.memory_norm(z_embedded + z_attended)  # 残差连接
+        z_embedded = self.memory_norm(z_embedded + z_attended)
 
-        # 4. 将记忆状态融入到主序列中
         x_with_memory = torch.cat([z_embedded, x_embedded], dim=1)  # (N, T+1, network_size)
 
-        # 5. 处理时间步和文本条件
         t = self.t_embedder(t)  # (N, D)
         y = self.y_embedder(y, self.training)
         y = self.y_embedder_affine(y)
         c = t + y  # (N, D)
 
 
-        # # 6. 通过DiT blocks处理
         # for block in self.blocks:
         #     x_with_memory = block(x_with_memory, c)  # (N, T+1, D)
 
-        # 7. 分离记忆状态和主序列
-        z_updated = x_with_memory[:, 0:1, :]  # (N, 1, network_size) - 记忆状态
-        x_processed = x_with_memory[:, 1:, :]  # (N, T, network_size) - 主序列
+        z_updated = x_with_memory[:, 0:1, :]  # (N, 1, network_size)
+        x_processed = x_with_memory[:, 1:, :]  # (N, T, network_size)
 
-        # 8. 生成最终输出
-        # 主序列输出（去噪后的时序数据）
         x_output = self.final_layer(x_processed, c)  # (N, T, patch_size * x_shape)
         x_output = self.unpatchify(x_output)  # (N, L * C)
 
-        # 记忆状态输出 (新增)
+
         z_output = self.z_embedder.get_memory_output(z_updated.squeeze(1))  # (N, z_shape)
 
         return x_output, z_output
@@ -362,17 +336,16 @@ class DiT(nn.Module):
         half = x[: len(x) // 2]
         x_combined = torch.cat([half, half], dim=0)
 
-        half_z = z[: len(z) // 2]  # 修改：适配新的z格式
+        half_z = z[: len(z) // 2]  
         z_combined = torch.cat([half_z, half_z], dim=0)
 
-        model_out, z_out = self.forward(x_combined, t, z_combined, y)  # 修改：接收两个输出
+        model_out, z_out = self.forward(x_combined, t, z_combined, y)  
 
         eps, rest = model_out, model_out
         cond_eps, uncond_eps = torch.split(eps, len(eps) // 2, dim=0)
         half_eps = uncond_eps + self.cfg_scale * (cond_eps - uncond_eps)
         eps = torch.cat([half_eps, half_eps], dim=0)
 
-        # 处理记忆状态输出
         cond_z, uncond_z = torch.split(z_out, len(z_out) // 2, dim=0)
         half_z = uncond_z + self.cfg_scale * (cond_z - uncond_z)
         z_output = torch.cat([half_z, half_z], dim=0)
@@ -418,7 +391,7 @@ def test_dit_model():
     batch_size = 64
     frame_stack = 24
     x_shape = 1
-    z_shape = 48  # 新增
+    z_shape = 48  
     # Test classifier-free guidance
     cfg_scale = 3.0
     external_condition_dim = 128
@@ -426,11 +399,11 @@ def test_dit_model():
                 frame_stack=frame_stack,
                 x_shape=1,
                 cfg_scale=cfg_scale,
-                z_shape=z_shape,dropout_prob=0.1,num_heads=8)  # 新增参数
+                z_shape=z_shape,dropout_prob=0.1,num_heads=8)  
 
     # Create dummy inputs
     x = torch.randn(batch_size, x_shape * frame_stack)
-    z = torch.randn(batch_size, z_shape)  # 修改：新的z格式
+    z = torch.randn(batch_size, z_shape)  
     t = torch.randint(0, 1000, (batch_size,))
     y = torch.randint(0, 100, (batch_size, external_condition_dim)).float()
 
@@ -444,7 +417,7 @@ def test_dit_model():
 
     # Run forward pass
     with torch.no_grad():
-        x_output, z_output = model(x, t, z, y)  # 修改：接收两个输出
+        x_output, z_output = model(x, t, z, y)  
 
     # Print results
     print(f"Input shapes: x={x.shape}, z={z.shape}")
@@ -452,11 +425,11 @@ def test_dit_model():
 
     # Need even batch size for cfg test
     x_cfg = torch.randn(batch_size * 2, x_shape * frame_stack).to(device)
-    z_cfg = torch.randn(batch_size * 2, z_shape).to(device)  # 修改：新的z格式
+    z_cfg = torch.randn(batch_size * 2, z_shape).to(device)  
     t_cfg = torch.randint(0, 1000, (batch_size * 2,)).to(device)
     y_cfg = torch.randint(0, 100, (batch_size * 2, external_condition_dim)).float().to(device)
     with torch.no_grad():
-        x_output_cfg, z_output_cfg = model.forward_with_cfg(x_cfg, t_cfg, z_cfg, y_cfg)  # 修改：接收两个输出
+        x_output_cfg, z_output_cfg = model.forward_with_cfg(x_cfg, t_cfg, z_cfg, y_cfg)  
 
     print(f"\nCFG Input shapes: x_cfg={x_cfg.shape}, z_cfg={z_cfg.shape}")
     print(f"CFG Output shapes: x_output_cfg={x_output_cfg.shape}, z_output_cfg={z_output_cfg.shape}")
@@ -464,4 +437,5 @@ def test_dit_model():
 
 
 if __name__ == "__main__":
+
     result = test_dit_model()
