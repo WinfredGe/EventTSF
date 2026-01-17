@@ -1,0 +1,7 @@
+batch_size: 64
+custom_dataset_name: "traffic_FromNewstoForecast"
+target: "load"
+seq_len: 384
+slice_size: 48
+frequency: "h"
+context_frames: 192

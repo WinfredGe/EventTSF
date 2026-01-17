@@ -1,0 +1,7 @@
+batch_size: 64
+custom_dataset_name: "atmospheric_physics"
+target: "VPdef (mbar)"
+seq_len: 576
+slice_size: 144
+frequency: "h"
+context_frames: 288

@@ -1,0 +1,7 @@
+batch_size: 64
+custom_dataset_name: "new_york_taxi"
+target: "total_dropoff"
+seq_len: 360
+slice_size: 24
+frequency: "h"
+context_frames: 168

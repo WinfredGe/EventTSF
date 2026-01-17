@@ -1,0 +1,29 @@
+defaults:
+  - _self_
+  - data: simulation_sine
+experiment:
+  epochs: 1000
+algorithm:
+  _name: "non_station_prediction_algorithm"
+  lr: 2e-5
+  max_lr: 2e-4
+  weight_decay: 1e-3
+  pct_start: 0.2
+  div_factor: 10
+  final_div_factor: 1e3
+  optimizer_beta: [0.9, 0.999]
+  teacher_forcing_ratio: 0.7
+  validation_noise_scale: 0.05
+  metadata_path: "./data/download/embedding/${data.custom_dataset_name}/text_and_ts_custom_metadata.json"
+  sampling_timesteps: 50
+model:
+  model_type: 'DiT'
+  time_schedule: 'adaptive'
+  z_shape: 48
+  num_transformer_layers: 15
+  cond_drop_prob: 0.6
+  min_drop_prob: 0.05
+  cfg_contrast_weight: 0.7
+wandb:
+  project: "EventTSF"
+  run_name: "run_${data.custom_dataset_name}_${now:%Y%m%d-%H%M%S}"
