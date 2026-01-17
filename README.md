@@ -1,4 +1,4 @@
-# (AAAI'26) EventTSF: Event-aware Non-stationary Time Series Forecasting
+# (IJCAI'26) EventTSF: Event-aware Non-stationary Time Series Forecasting
 
 
 
@@ -61,6 +61,7 @@ python main.py data=weather_TimeCAPsan
 
 ### Configuration
 Experiment configurations are managed via Hydra. See `configs/` for specific settings.
+
 
 
 
