@@ -54,7 +54,6 @@ class FlowMatchingModel(nn.Module):
             params = {**common_params, **udit_params}
             self.model = UDiT(**params)
 
-        
         self.control_linear_alpha = nn.Linear(self.external_cond_dim, 1)
         self.control_linear_beta = nn.Linear(self.external_cond_dim, 1)
 
