@@ -89,6 +89,10 @@ Experiment configurations are managed via Hydra. See `configs/` for dataset and 
 2. Download and unzip the datasets into `data/download/`.
 3. Run `bash run.sh` or the individual dataset commands above.
 
+## 🙏 Acknowledgements
+- https://arxiv.org/abs/2407.01392 for the autoregressive diffusion inspiration.
+- https://arxiv.org/pdf/2411.09502 for the dynamic noise adjustment design.
+
 ## 🙋 Citation
 If you find this resource helpful, please consider starring this repo and citing:
 ```bibtex
