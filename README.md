@@ -90,8 +90,8 @@ Experiment configurations are managed via Hydra. See `configs/` for dataset and 
 3. Run `bash run.sh` or the individual dataset commands above.
 
 ## 🙏 Acknowledgements
-- https://arxiv.org/abs/2407.01392 for the autoregressive diffusion inspiration.
-- https://arxiv.org/pdf/2411.09502 for the dynamic noise adjustment design.
+- [ArXiv:2407.01392](https://arxiv.org/abs/2407.01392) for the autoregressive diffusion inspiration.
+- [ArXiv:2411.09502](https://arxiv.org/abs/2411.09502) for the dynamic noise adjustment design.
 
 ## 🙋 Citation
 If you find this resource helpful, please consider starring this repo and citing:
