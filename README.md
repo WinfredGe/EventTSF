@@ -1,9 +1,9 @@
 <div align="center">
 
-<h2><b>(IJCAI'25) EventTSF: Event-aware Non-stationary Time Series Forecasting</b></h2>
+<h2><b>(IJCAI'26) EventTSF: Event-aware Non-stationary Time Series Forecasting</b></h2>
 
 <p>
-  <img src="https://github.com/user-attachments/assets/829173cd-4c69-4c11-95bd-4df5befb7dbe" width="70">
+  <img src="icon.svg" width="70">
 </p>
 
 <p>
@@ -19,7 +19,7 @@
 > 🧭 It aligns event descriptions with time series to improve forecasting under abrupt distribution shifts.
 
 ## 🗞️ Updates / News
-- 🚩 **2025**: **EventTSF** has been accepted by *IJCAI 2025*.
+- 🚩 **2026**: **EventTSF** has been accepted by *IJCAI 2026*.
 
 ## 💫 Introduction
 EventTSF provides a PyTorch Lightning implementation for event-aware, non-stationary time series forecasting. It supports event-text and time-series paired data with configurable pipelines via Hydra.
@@ -90,8 +90,7 @@ Experiment configurations are managed via Hydra. See `configs/` for dataset and 
 3. Run `bash run.sh` or the individual dataset commands above.
 
 ## 🙏 Acknowledgements
-- [ArXiv:2407.01392](https://arxiv.org/abs/2407.01392) for the autoregressive diffusion inspiration.
-- [ArXiv:2411.09502](https://arxiv.org/abs/2411.09502) for the dynamic noise adjustment design.
+Our implementation adapts Time-Series-Library, TSGBench, TOTEM and Meta (Scalable Diffusion Models with Transformers) as the code base and have extensively modified it to our purposes. We thank the authors for sharing their implementations and related resources.
 
 ## 🙋 Citation
 If you find this resource helpful, please consider starring this repo and citing:
