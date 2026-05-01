@@ -1,4 +1,51 @@
-<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="80" height="80" rx="18" fill="#3B82F6"/>
-  <path d="M26 24H54V30H33V38H51V44H33V50H54V56H26V24Z" fill="white"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 180" role="img" aria-labelledby="title desc">
+  <title id="title">EventTSF logo</title>
+  <desc id="desc">Academic logo for EventTSF: an event-aware probabilistic forecast with a sharp event-induced peak and a dashed no-event inertial trajectory.</desc>
+  <defs>
+    <style>
+      .primary { stroke: #19324D; }
+      .secondary { stroke: #6F8194; }
+      .text { fill: #172033; }
+      .subtext { fill: #5B6B7D; }
+    </style>
+  </defs>
+
+  <g transform="translate(38 32)" fill="none" stroke-linecap="round">
+    <path d="M20 70C39 70 45 92 59 92C73 92 79 64 87 38C92 21 97 2 103 -6C110 3 114 28 121 52C128 77 133 94 146 94C164 94 176 68 196 68C208 68 216 74 228 74L228 102C216 102 208 96 196 96C176 96 164 122 146 122C133 122 128 105 121 80C114 56 110 31 103 22C97 30 92 49 87 66C79 92 73 120 59 120C45 120 39 98 20 98Z"
+          fill="#6F8194" opacity="0.20" stroke="none"/>
+    <path d="M20 78C39 78 45 100 59 100C73 100 79 72 87 46C92 29 97 10 103 2C110 11 114 36 121 60C128 85 133 102 146 102C164 102 176 76 196 76C208 76 216 82 228 82L228 94C216 94 208 90 196 90C176 90 164 116 146 116C133 116 128 99 121 74C114 50 110 25 103 16C97 24 92 43 87 60C79 86 73 114 59 114C45 114 39 92 20 92Z"
+          fill="#6F8194" opacity="0.60" stroke="none"/>
+
+    <path d="M20 84C39 84 45 106 59 106C78 106 93 109 111 111C132 113 151 108 171 99C190 91 211 86 228 88"
+          class="secondary" stroke-width="2.6" stroke-dasharray="7 7" opacity="0.68"/>
+
+    <path d="M20 70C39 70 45 92 59 92C73 92 79 64 87 38C92 21 97 2 103 -6C110 3 114 28 121 52C128 77 133 94 146 94C164 94 176 68 196 68C208 68 216 74 228 74"
+          class="secondary" stroke-width="1.2" opacity="0.52"/>
+    <path d="M20 98C39 98 45 120 59 120C73 120 79 92 87 66C92 49 97 30 103 22C110 31 114 56 121 80C128 105 133 122 146 122C164 122 176 96 196 96C208 96 216 102 228 102"
+          class="secondary" stroke-width="1.2" opacity="0.52"/>
+    <path d="M20 78C39 78 45 100 59 100C73 100 79 72 87 46C92 29 97 10 103 2C110 11 114 36 121 60C128 85 133 102 146 102C164 102 176 76 196 76C208 76 216 82 228 82"
+          class="secondary" stroke-width="1" opacity="0.60"/>
+    <path d="M20 92C39 92 45 114 59 114C73 114 79 86 87 60C92 43 97 24 103 16C110 25 114 50 121 74C128 99 133 116 146 116C164 116 176 90 196 90C208 90 216 94 228 94"
+          class="secondary" stroke-width="1" opacity="0.60"/>
+
+    <path d="M20 84C39 84 45 106 59 106C73 106 79 78 87 52C92 35 97 16 103 8C110 17 114 42 121 66C128 91 133 108 146 108C164 108 176 82 196 82C208 82 216 88 228 88"
+          class="primary" stroke-width="6.6" stroke-linejoin="round"/>
+
+    <g transform="translate(47 13)" class="primary" stroke-width="2.05" stroke-linejoin="round">
+      <rect x="0" y="9" width="28" height="25" rx="4.2" fill="#FFFFFF"/>
+      <path d="M0 16H28"/>
+      <path d="M7 5V11"/>
+      <path d="M14 5V11"/>
+      <path d="M21 5V11"/>
+      <path d="M7 23H16"/>
+      <path d="M7 29H13"/>
+      <circle cx="28" cy="32" r="9.3" fill="#FFFFFF"/>
+      <path d="M28 27V32L32 34"/>
+    </g>
+  </g>
+
+  <g transform="translate(292 53)">
+    <text x="0" y="53" class="text" font-family="Times New Roman, Times, serif" font-size="58" font-weight="700">EventTSF</text>
+    <text x="2" y="88" class="subtext" font-family="Times New Roman, Times, serif" font-size="20">Event-aware non-stationary time series forecasting</text>
+  </g>
 </svg>
