@@ -3,7 +3,6 @@ from random import random
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from .utimedit import UDiT
 from .timedit import DiT
 import numpy as np
 import pandas as pd
