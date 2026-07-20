@@ -1,7 +1,0 @@
-batch_size: 64
-custom_dataset_name: "electricity_accomodation"
-target: "load"
-seq_len: 360
-slice_size: 24
-frequency: "h"
-context_frames: 168
